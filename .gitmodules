@@ -1,0 +1,3 @@
+[submodule "joeecc"]
+	path = joeecc
+	url = git@github.com:johndoe31415/joeecc.git
