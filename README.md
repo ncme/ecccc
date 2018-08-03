@@ -4,8 +4,11 @@ ec⁴ - The ECC Constant Creator
 ec⁴ is a command-line utility written in Python that generates ECC constants as compilable code for a variety of curves, target languages, byte- and word-orderings.
 
 Supported languages: C, Python, or plain Integers
+
 Supported byte order: big / little endian
+
 Supported word order: big / little endian
+
 Supported word sizes: 8 - 256 bits
 
 ## Usage
