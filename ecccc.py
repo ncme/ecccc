@@ -503,6 +503,8 @@ def print_domainparams(curve, f):
     if curve.curvetype == "montgomery":
         print_code("A", f(params.a))
         print_code("B", f(params.b))
+        print_code("2A", f(params.a * 2), comment="used in Okeya and Sakurai y-coord recovery")
+        print_code("2B", f(params.b * 2), comment="used in Okeya and Sakurai y-coord recovery")
     if curve.curvetype == "twistededwards":
         print_code("a", f(params.a), comment="curve twist")
         print_code("d", f(params.d))
