@@ -245,7 +245,7 @@ if arg.target_syntax == "C":
     arg.start_delim = "{"
     arg.end_delim = "};"
     # arg.hex_case = 'UPPER'
-    arg.type = "static const uint32_t"
+    arg.type = f"static const uint{arg.word_size}_t"
     arg.style = "C"
     arg.comment_symbol = "// "
 if arg.target_syntax == "Integers":
