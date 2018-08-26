@@ -702,7 +702,7 @@ def print_domainparams(curve, f):
         ecdsaTestRand2 = (
             0x01FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         )
-        msg = ecdsaTestMessage.to_bytes(32, byteorder="big")
+        msg = ecdsaTestMessage.to_bytes(32, byteorder=arg.byte_order)
         print_code("ecdsaTestMessage", f(ecdsaTestMessage))
         print_code("ecdsaTestSecret", f(ecdsaTestSecret))
         assert ecdsaTestSecret < params.n
@@ -714,6 +714,8 @@ def print_domainparams(curve, f):
         assert ecdsaTestRand1 > 0
         assert ecdsaTestRand2 > 0
         p1 = ecdsaTestSecret * params.G
+        print_code("ecdsaTestRand1", f(ecdsaTestRand1))
+        print_code("ecdsaTestRand2", f(ecdsaTestRand2))
         print_code("p1x", f(p1.x))
         print_code("p1y", f(p1.y))
         pk = ECPrivateKey(ecdsaTestSecret, curve)
