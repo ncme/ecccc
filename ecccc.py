@@ -30,7 +30,7 @@ from ecc import (
 PROG_VERSION = "1.0a"
 
 SUPPORTED_CURVES = ["secp256r1", "curve25519", "ed25519", "wei25519", "wei25519.2"]
-SUPPORTED_SYNTAX = ["C", "Python", "Integers"]
+SUPPORTED_SYNTAX = ["C", "Python", "Integers", "Custom"]
 
 ################################ Argument Parsing ################################
 
@@ -48,8 +48,8 @@ syntaxor = parser.add_argument_group(
     title="syntax", description="Options for how constants are displayed syntactically"
 )
 overwrites = parser.add_argument_group(
-    title="syntax overwrites",
-    description="Options for overwriting some features of the printed syntax",
+    title="custom syntax",
+    description="Custom Syntax options (requires --syntax Custom)",
 )
 parser.add_argument("--version", action="version", version=PROG_VERSION)
 parser.add_argument(
@@ -115,17 +115,41 @@ parser.add_argument(
     default=False,
     help="Run integrity checks on supported conversions",
 )
-overwrites.add_argument("--word-delim", default=" ")
-overwrites.add_argument("--word-format", default="{}")
-overwrites.add_argument("--start-delim", default="")
-overwrites.add_argument("--end-delim", default="")
-overwrites.add_argument("--hex-case", choices=["LOWER", "UPPER"], default="LOWER")
+overwrites.add_argument(
+    "--word-delim",
+    default=" ",
+    help="Customize the delimiter between words"
+)
+overwrites.add_argument(
+    "--word-format",
+    default="{}",
+    help="Customize the format string for each word."
+)
+overwrites.add_argument(
+    "--start-delim",
+    default="",
+    help="Customize the delimiter at the start of a constant"
+)
+overwrites.add_argument(
+    "--end-delim",
+    default="",
+    help="Customize the delimiter at the end of a constant"
+)
+overwrites.add_argument(
+    "--hex-case",
+    choices=["LOWER", "UPPER"],
+    default="LOWER",
+    help="Allows to set lower or uppercase letters for hex digits"
+)
 
 
 arg = parser.parse_args()
 if not arg.curves:
     arg.curves = SUPPORTED_CURVES
 
+if arg.word_size == 8 and arg.word_order == 'little' and arg.byte_order == 'little':
+    print('Ignoring option "--word_order little" because it is already determined by byte order')
+    arg.byte_order = 'big'
 
 ################################ Helper Functions ################################
 
@@ -254,6 +278,9 @@ if arg.target_syntax == "Integers":
 if arg.target_syntax == "Python":
     arg.style = "Python"
     arg.comment_symbol = "# "
+if arg.target_syntax == "Custom":
+    arg.style = "Custom"
+    arg.comment_symbol = ""
 
 
 ################################ Printer Functions ################################
@@ -320,6 +347,7 @@ syntax = {
     "C": print_words,
     "C array": print_words,
     "Python": print_int,
+    "Custom": print_words
 }
 
 def print_code(name, data, comment="", style=arg.style, words=int(256 / arg.word_size)):
@@ -347,8 +375,8 @@ def print_code(name, data, comment="", style=arg.style, words=int(256 / arg.word
                 comment=" " + arg.comment_symbol + comment if comment else "",
             )
         )
-    if style == "c8":
-        print(" {} ; //{}{}".format(data, name, " (" + comment + ")" if comment else ""))
+    if style == "Custom":
+        print("{data}".format(data=data))
 
 
 ################################ Conversion Functions ################################
